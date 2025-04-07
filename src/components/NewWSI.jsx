@@ -114,9 +114,25 @@ const NewWsi = () => {
       updateHubCanvas(mouseX, mouseY);
     };
 
+    // ressetting the zoom.
+    const resetZoom = () => {
+      setScale(1);
+      setOffset({ x: 0, y: 0 });
+
+      // resetting the canvas rectangle on zoom reset.
+      const canvas = canvasRef.current;
+      const canvasCenterX = canvas.width / 2;
+      const canvasCenterY = canvas.height / 2;
+      updateHubCanvas(canvasCenterX, canvasCenterY);
+    };
+
+    const zoomButton = document.getElementById("reset-zoom");
+    zoomButton.addEventListener("click", resetZoom);
+
     canvas.addEventListener("wheel", handleWheel, { passive: false });
     return () => {
       canvas.removeEventListener("wheel", handleWheel);
+      zoomButton.removeEventListener("click", resetZoom);
     };
   }, [scale, offset, showDetections]);
 
@@ -148,12 +164,6 @@ const NewWsi = () => {
   }, []);
 
   // Reset zoom and offset
-  const resetZoom = () => {
-    setScale(1);
-    setOffset({ x: 0, y: 0 });
-
-    
-  };
 
   return (
     <div>
@@ -185,8 +195,8 @@ const NewWsi = () => {
               Toggle Detection
             </button>
             <button
+              id="reset-zoom"
               className="px-4 py-3 border border-gray-600 rounded"
-              onClick={resetZoom}
             >
               Reset zoom
             </button>
